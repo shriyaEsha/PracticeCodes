@@ -44,7 +44,7 @@ void disp_lev(node *root,int l)
 {
 if(!root)return;
 if(l==1)
-cout<<root->data<<" ";
+cout<<char(root->data)<<" ";
 disp_lev(root->left,l-1);
 disp_lev(root->right,l-1);
 }
@@ -124,7 +124,7 @@ void inorder(node *root)
 {
 if(!root)return;
 inorder(root->left);
-cout<<root->data<<" ";
+cout<<char(root->data)<<" ";
 inorder(root->right);
 }
 
@@ -418,6 +418,27 @@ root->right->data += root->data - summ;
 return root->data;
 }
 
+int search_elem(char ino[],int start,int n,char elem)
+{
+for(int i=start;i<n;i++)
+if(ino[i]==elem)
+return i;
+return -1;
+}
+//construct tree from traversals
+node* construct_pre_in(char pre[],char ino[],int n,int start)
+{
+static int pidx = 0;
+if(start>n)return NULL;
+node * root;
+root = create(pre[pidx++]);
+int idx = search_elem(ino,start,n,root->data);
+if(start==n)
+return root;
+root->left = construct_pre_in(pre,ino,idx-1,start);
+root->right = construct_pre_in(pre,ino,n,idx+1);
+return root;
+}
 main()
 {
 node * root = NULL;
@@ -443,7 +464,6 @@ int diff = INT_MAX,elem = 29,closest;
 cout<<"\nHas Path sum!";
 else
 cout<<"\nNo path sum";
-*/
 root = NULL;
 root = create(8);
 root->left = create(4);
@@ -455,4 +475,12 @@ root->right->right = create(4);
 disp(root);
 sum_kids(root);
 disp(root);
+*/
+char in[] = {'D', 'B', 'E', 'A', 'F', 'C'};
+char pre[] = {'A', 'B', 'D', 'E', 'C', 'F'};
+int len = sizeof(in)/sizeof(in[0]);
+root = construct_pre_in(pre,in,len,0);
+disp(root);
+cout<<endl;
+inorder(root);
 }
